@@ -27,7 +27,7 @@ jobs:
       # Paso 3: Construir la imagen de Docker
       - name: Build Docker Image
         run: |
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/my-app:latest .
+         docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/my-app:latest ./cloud/cursos
 
       # Paso 4: Hacer push de la imagen a DockerHub
       - name: Push Docker Image
