@@ -10,7 +10,7 @@ RUN mvn clean package -DskipTests
 
 FROM eclipse-temurin:22-jdk
 
-COPY --from=buildstage /app/target/microservicio-1.0.0.jar /app/app.jar
+COPY --from=buildstage /app/target/*.jar /app/app.jar
 
 EXPOSE 8080
 
