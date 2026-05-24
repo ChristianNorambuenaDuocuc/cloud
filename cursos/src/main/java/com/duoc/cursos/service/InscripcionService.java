@@ -21,6 +21,10 @@ public class InscripcionService {
         this.inscripcionRepository = inscripcionRepository;
     }
 
+public List<InscripcionModel> listar() {
+    return inscripcionRepository.findAll();
+}
+    
     public InscripcionModel inscribir(InscripcionRequest request) {
 
         List<CursoModel> cursos = cursoRepository.findAllById(request.getCursosIds());
