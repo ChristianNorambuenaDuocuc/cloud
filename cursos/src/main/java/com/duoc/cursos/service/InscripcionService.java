@@ -44,4 +44,30 @@ public List<InscripcionModel> listar() {
 
         return inscripcionRepository.save(inscripcion);
     }
+
+    public InscripcionModel buscarPorId(Long id) {
+    return inscripcionRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Inscripción no encontrada"));
+}
+
+public String generarResumenTexto(Long id) {
+    InscripcionModel inscripcion = buscarPorId(id);
+
+    StringBuilder resumen = new StringBuilder();
+
+    resumen.append("Resumen de inscripción N° ").append(inscripcion.getId()).append("\n");
+    resumen.append("Estudiante: ").append(inscripcion.getEstudiante()).append("\n\n");
+    resumen.append("Cursos inscritos:\n");
+
+    inscripcion.getCursos().forEach(curso -> {
+        resumen.append("- ").append(curso.getNombre()).append("\n");
+        resumen.append("  Instructor: ").append(curso.getInstructor()).append("\n");
+        resumen.append("  Duración: ").append(curso.getDuracion()).append("\n");
+        resumen.append("  Costo: ").append(curso.getCosto()).append("\n\n");
+    });
+
+    resumen.append("Total a pagar: ").append(inscripcion.getTotal()).append("\n");
+
+    return resumen.toString();
+}
 }

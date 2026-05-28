@@ -50,7 +50,7 @@ public class AwsServiceImpl implements AwsS3Service {
     public String uploadFile(String bucketName, String filePath, MultipartFile file) throws IOException {
         File fileObj = convertMultipartFileToFile(file);
 
-        String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+        String fileName = file.getOriginalFilename();
         String fullPath = filePath + fileName;
 
         String result = s3Repository.uploadFile(bucketName, fullPath, fileObj);
