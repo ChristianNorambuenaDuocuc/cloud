@@ -65,4 +65,13 @@ public class AwsServiceImpl implements AwsS3Service {
         file.transferTo(convertedFile);
         return convertedFile;
     }
+
+@Override
+public String uploadFileFromFile(String bucketName,
+                                 String key,
+                                 File file) throws IOException {
+
+    return s3Repository.uploadFile(bucketName, key, file);
+}
+
 }
