@@ -8,6 +8,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -44,58 +45,49 @@ public class ResumenInscripcionController {
                 .body(resource);
     }
 
-    @PostMapping("/{id}/resumen/s3")
-    public ResponseEntity<String> subirResumenAS3(
-            @PathVariable Long id,
-            @RequestParam String bucketName) throws IOException {
+   @PostMapping("/{id}/resumen/s3")
+public ResponseEntity<String> subirResumenAS3(
+        @PathVariable Long id,
+        @RequestParam String bucketName) throws IOException {
 
-        String resumen = inscripcionService.generarResumenTexto(id);
-        String fileName = "resumen-inscripcion-" + id + ".txt";
-        String key = id + "/" + fileName;
+    String resumen = inscripcionService.generarResumenTexto(id);
+    String fileName = "resumen-inscripcion-" + id + ".txt";
+    String key = id + "/" + fileName;
 
-        File tempFile = File.createTempFile("resumen-inscripcion-" + id, ".txt");
+    File tempFile = File.createTempFile("resumen-inscripcion-" + id, ".txt");
 
-        try (FileWriter writer = new FileWriter(tempFile)) {
-            writer.write(resumen);
-        }
-
-        String resultado = awsS3Service.uploadFile(bucketName, id + "/", new org.springframework.mock.web.MockMultipartFile(
-                fileName,
-                fileName,
-                "text/plain",
-                java.nio.file.Files.readAllBytes(tempFile.toPath())
-        ));
-
-        tempFile.delete();
-
-        return ResponseEntity.ok("Resumen subido a S3 en carpeta: " + id + "/");
+    try (FileWriter writer = new FileWriter(tempFile)) {
+        writer.write(resumen);
     }
 
-    @PutMapping("/{id}/resumen/s3")
-    public ResponseEntity<String> modificarResumenAS3(
-            @PathVariable Long id,
-            @RequestParam String bucketName) throws IOException {
+    awsS3Service.uploadFileFromFile(bucketName, key, tempFile);
 
-        String resumen = inscripcionService.generarResumenTexto(id);
-        String fileName = "resumen-inscripcion-" + id + ".txt";
+    tempFile.delete();
 
-        File tempFile = File.createTempFile("resumen-inscripcion-" + id, ".txt");
+    return ResponseEntity.ok("Resumen subido a S3: " + key);
+}
 
-        try (FileWriter writer = new FileWriter(tempFile)) {
-            writer.write(resumen);
-        }
+   @PutMapping("/{id}/resumen/s3")
+public ResponseEntity<String> modificarResumenAS3(
+        @PathVariable Long id,
+        @RequestParam String bucketName) throws IOException {
 
-        String resultado = awsS3Service.uploadFile(bucketName, id + "/", new org.springframework.mock.web.MockMultipartFile(
-                fileName,
-                fileName,
-                "text/plain",
-                java.nio.file.Files.readAllBytes(tempFile.toPath())
-        ));
+    String resumen = inscripcionService.generarResumenTexto(id);
+    String fileName = "resumen-inscripcion-" + id + ".txt";
+    String key = id + "/" + fileName;
 
-        tempFile.delete();
+    File tempFile = File.createTempFile("resumen-inscripcion-" + id, ".txt");
 
-        return ResponseEntity.ok("Resumen actualizado en S3: " + fileName);
+    try (FileWriter writer = new FileWriter(tempFile)) {
+        writer.write(resumen);
     }
+
+    awsS3Service.uploadFileFromFile(bucketName, key, tempFile);
+
+    tempFile.delete();
+
+    return ResponseEntity.ok("Resumen actualizado en S3: " + key);
+}
 
     @GetMapping("/{id}/resumen/s3")
     public ResponseEntity<ByteArrayResource> descargarResumenDesdeS3(

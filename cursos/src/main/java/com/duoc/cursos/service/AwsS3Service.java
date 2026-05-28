@@ -4,6 +4,7 @@ package com.duoc.cursos.service;
 import com.duoc.cursos.model.Asset;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -19,5 +20,9 @@ public interface AwsS3Service {
 
     void deleteObject(String bucketName, String fileKey);
 
-    String uploadFile(String bucketName, String filePath, MultipartFile file) throws IOException;
+        String uploadFile(String bucketName, String filePath, MultipartFile file) throws IOException;
+
+    String uploadFileFromFile(String bucketName, String key, File file) throws IOException;
 }
+
+
