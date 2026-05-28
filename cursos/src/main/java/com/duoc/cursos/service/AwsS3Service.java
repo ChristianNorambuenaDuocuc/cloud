@@ -1,5 +1,23 @@
 package com.duoc.cursos.service;
 
-public class AwsS3Service {
 
+import com.duoc.cursos.model.Asset;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.List;
+
+public interface AwsS3Service {
+
+    String getS3FileContent(String bucketName, String fileName) throws IOException;
+
+    List<Asset> getS3Files(String bucketName) throws IOException;
+
+    byte[] downloadFile(String bucketName, String fileName) throws IOException;
+
+    void moveObject(String bucketName, String fileKey, String destinationFileKey);
+
+    void deleteObject(String bucketName, String fileKey);
+
+    String uploadFile(String bucketName, String filePath, MultipartFile file) throws IOException;
 }
